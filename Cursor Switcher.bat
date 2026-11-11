@@ -6,7 +6,7 @@ mode con: cols=70 lines=44 >nul 2>&1
 setlocal EnableDelayedExpansion
 set "PS1=%LOCALAPPDATA%\CursorSwitcher\apply-cursor.ps1"
 set "PACKS=%LOCALAPPDATA%\CursorSwitcher\Packs"
-set "ZIPURL=https://github.com/mahdi2372/cursor-switcher/releases/download/v1.0/cursor-switcher.zip"
+set "ZIPURL=https://github.com/mahdi2372/cursor-switcher/releases/download/v2.0/cursor-switcher-v2.zip"
 set PAGE=1
 set TOTAL=280
 
