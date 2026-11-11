@@ -4,8 +4,44 @@ color 0B
 mode con: cols=60 lines=40 >nul 2>&1
 setlocal EnableDelayedExpansion
 set "PS1=%LOCALAPPDATA%\CursorSwitcher\apply-cursor.ps1"
+set "PACKS=%LOCALAPPDATA%\CursorSwitcher\Packs"
+set "ZIPURL=https://github.com/mahdi2372/cursor-switcher/releases/download/v1.0/cursor-switcher.zip"
 set PAGE=1
 set TOTAL=218
+
+REM === Auto-download packs if missing ===
+if exist "%PACKS%\acheron" goto READY
+if exist "%PACKS%" for /d %%D in ("%PACKS%\*") if exist "%%D" goto READY
+
+echo.
+echo   Packs not found locally. Downloading from GitHub...
+echo   (%ZIPURL%)
+echo.
+if not exist "%LOCALAPPDATA%\CursorSwitcher" mkdir "%LOCALAPPDATA%\CursorSwitcher"
+powershell -NoProfile -Command "try { [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%ZIPURL%' -OutFile '%TEMP%\cursor-switcher.zip' -UseBasicParsing; Write-Host '  Download OK' } catch { Write-Host ('  Download FAILED: ' + $_.Exception.Message); exit 1 }"
+if errorlevel 1 (
+  echo.
+  echo   Download failed! Manual install:
+  echo   1. Open https://github.com/mahdi2372/cursor-switcher/releases/tag/v1.0
+  echo   2. Download cursor-switcher.zip
+  echo   3. Extract to %LOCALAPPDATA%\CursorSwitcher\
+  echo.
+  pause
+  exit /b 1
+)
+echo   Extracting...
+powershell -NoProfile -Command "try { Expand-Archive -Path '%TEMP%\cursor-switcher.zip' -DestinationPath '%LOCALAPPDATA%\CursorSwitcher' -Force; Write-Host '  Extract OK' } catch { Write-Host ('  Extract FAILED: ' + $_.Exception.Message); exit 1 }"
+if errorlevel 1 (
+  echo   Extract failed!
+  pause
+  exit /b 1
+)
+del "%TEMP%\cursor-switcher.zip" >nul 2>&1
+echo   Done! 218 packs installed.
+timeout /t 2 >nul
+
+:READY
+set PS1=%LOCALAPPDATA%\CursorSwitcher\apply-cursor.ps1
 
 :MENU
 cls
